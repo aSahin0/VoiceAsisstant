@@ -1,4 +1,4 @@
-# Gerekli kütüphaneleri içe aktarma
+
 import os
 import time
 import random
@@ -33,13 +33,11 @@ class VoiceAssistant:
         self.recognizer = sr.Recognizer()
         self.translator = Translator()
         
-        # --- YAPILANDIRMA ---
-        # Lütfen OpenWeatherMap'ten aldığınız API anahtarını buraya girin.
+       
         self.OPENWEATHERMAP_API_KEY = "BURAYA_API_ANAHTARINIZI_GIRIN"
         self.WEATHER_API_URL = "https://api.openweathermap.org/data/2.5/weather"
         
-        # Komutları ve karşılık gelen fonksiyonları eşleştiren sözlük.
-        # Bu yapı, if-elif zincirinden çok daha verimli ve yönetilebilirdir.
+       
         self.commands = {
             ("merhaba", "selam"): self.greet,
             ("görüşürüz", "sistemi kapat"): self.shutdown,
@@ -122,7 +120,7 @@ class VoiceAssistant:
         search_query = self._listen("YouTube'da ne aramak istersiniz?")
         if search_query:
             self._speak(f"{search_query} YouTube'da açılıyor.")
-            # Boşlukları ve özel karakterleri URL uyumlu hale getir
+        
             encoded_query = re.sub(r'\s+', '+', search_query)
             url = f"https://www.youtube.com/results?search_query={encoded_query}"
             self._open_browser(url)
@@ -139,14 +137,9 @@ class VoiceAssistant:
     def _open_browser(self, url):
         """Verilen URL'yi bir tarayıcıda açar."""
         try:
-            # webdriver-manager ile chromedriver'ı otomatik yönet
             service = ChromeService(ChromeDriverManager().install())
             driver = webdriver.Chrome(service=service)
             driver.get(url)
-            # Tarayıcının hemen kapanmaması için bir süre bekletme (opsiyonel)
-            # Bu, asistanın diğer komutları dinlemeye devam etmesine olanak tanır.
-            # Uzun süreli bir sleep yerine, kullanıcı tarayıcıyı kapatana kadar
-            # programın devam etmesini sağlamak daha iyidir.
         except Exception as e:
             self._speak("Tarayıcıyı başlatırken bir hata oluştu.")
             print(f"Tarayıcı hatası: {e}")
@@ -232,7 +225,6 @@ class VoiceAssistant:
             filename = self._get_unique_filename("fotograf", "jpg")
             cv2.imwrite(filename, frame)
             self._speak(f"Fotoğraf {filename} olarak kaydedildi.")
-            # Fotoğrafı göstermek için
             cv2.imshow('Çekilen Fotoğraf', frame)
             cv2.waitKey(3000) # 3 saniye göster
             cv2.destroyAllWindows()
@@ -281,14 +273,13 @@ class VoiceAssistant:
         while True:
             command = self._listen()
             if command:
-                # Komut sözlüğünde anahtar kelimeleri kontrol et
                 found_command = False
                 for keywords, function in self.commands.items():
                     for keyword in keywords:
                         if keyword in command:
                             function()
                             found_command = True
-                            break # ilgili fonksiyonu çalıştırdıktan sonra iç döngüden çık
+                            break
                     if found_command:
                         break # ana döngüden çık
                 
